@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for
-import os
+from flask import Flask, render_template, redirect, url_for
+import subprocess
 
 app = Flask(__name__)
 
@@ -9,22 +9,22 @@ def index():
 
 @app.route('/merge')
 def merge():
-    os.system('python pdfmerger.py')
+    subprocess.call(['python', 'pdfmerger.py'])
     return redirect(url_for('index'))
 
 @app.route('/crop')
 def crop():
-    os.system('python recortarpdf.py')
+    subprocess.call(['python', 'recortarpdf.py'])
     return redirect(url_for('index'))
 
 @app.route('/convert-to-images')
 def convert_to_images():
-    os.system('python PdfA3Fotos.py')
+    subprocess.call(['python', 'pdf_a_tres_fotos.py'])
     return redirect(url_for('index'))
 
 @app.route('/convert-to-pdf')
 def convert_to_pdf():
-    os.system('python imagestopdf.py')
+    subprocess.call(['python', 'imagestopdf.py'])
     return redirect(url_for('index'))
 
 if __name__ == '__main__':

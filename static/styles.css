@@ -1,35 +1,95 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
+    background-color: #000000; /* Fondo negro */
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative; /* Añadido para el fondo */
+    z-index: 1;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/static/Background.webp'); /* Usa una ruta estática temporal */
+    background-size: cover;
+    background-position: center;
+    opacity: 0.5; /* Ajustar la opacidad según sea necesario */
+    z-index: -1;
+}
+
+.container {
+    width: 100%; /* Asegura que el contenido ocupe todo el ancho */
+    max-width: 1200px;
+    margin: auto;
+    z-index: 2; /* Asegurar que el contenido esté por encima del fondo */
+}
+
+header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    background-color: transparent; /* Fondo transparente */
+}
+
+.logo {
+    width: 100px;
+}
+
+.tools {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.tool {
+    background-color: #2C2C2C;
+    border-radius: 10px;
+    margin: 10px;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    width: 260px; /* Incrementado en un 30% */
+    height: 260px; /* Incrementado en un 30% */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    transition: transform 0.3s;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: 1;
+    opacity: 0.7;
+}
+
+.tool-info {
+    text-align: center;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    width: 100%;
+    z-index: 2;
+}
+
+.tool h3 {
     margin: 0;
 }
 
-h1 {
-    color: #333;
-}
-
-.tool-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    background-color: #4CAF50;
-    color: white;
-}
-
-button:hover {
-    background-color: #45a049;
+.tool:hover {
+    transform: scale(1.05);
 }
