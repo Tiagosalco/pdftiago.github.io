@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop PDF</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('{{ url_for('static', filename='Background.webp') }}') no-repeat center center fixed;
+            background-size: cover;
+            opacity: 0.5;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="container">
+        <header>
+            <img src="{{ url_for('static', filename='Herramientas.webp') }}" alt="Logo" class="logo">
+        </header>
+        <nav class="menu">
+            <a href="/">Home</a>
+            <a href="/merge">Merge PDFs</a>
+            <a href="/crop">Crop PDF</a>
+            <a href="/convert-to-images">PDF a 3 Fotos</a>
+            <a href="/convert-to-pdf">Convert Images to PDF</a>
+        </nav>
+        <section class="content">
+            <h1>Crop PDF</h1>
+            <form action="/crop" method="post" enctype="multipart/form-data">
+                <input type="file" name="file">
+                <button type="submit">Crop</button>
+            </form>
+        </section>
+    </div>
+</body>
+</html>
+

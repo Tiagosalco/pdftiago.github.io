@@ -1,34 +1,34 @@
 import os
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 from PIL import Image
 import fitz  # PyMuPDF
 
 class PDFToImageConverter:
     def __init__(self, root):
         self.root = root
-        self.root.title("PDF to Image Converter")
-        self.root.configure(bg="#f2493d")
+        self.root.title("PDF a 3 Fotos")
+        self.root.configure(bg="#2C2C2C")
 
-        self.input_label = tk.Label(root, text="Select PDF File:", bg="#f2493d")
+        self.input_label = tk.Label(root, text="Seleccionar archivo PDF:", bg="#2C2C2C", fg="white")
         self.input_label.pack(pady=10)
 
         self.input_entry = tk.Entry(root, width=50)
         self.input_entry.pack(pady=5)
 
-        self.input_button = tk.Button(root, text="Browse", command=self.browse_pdf)
+        self.input_button = tk.Button(root, text="Buscar", command=self.browse_pdf, bg="#1E78FF", fg="white")
         self.input_button.pack(pady=5)
 
-        self.output_label = tk.Label(root, text="Output Folder:", bg="#f2493d")
+        self.output_label = tk.Label(root, text="Carpeta de salida:", bg="#2C2C2C", fg="white")
         self.output_label.pack(pady=10)
 
         self.output_entry = tk.Entry(root, width=50)
         self.output_entry.pack(pady=5)
 
-        self.output_button = tk.Button(root, text="Browse", command=self.browse_output_folder)
+        self.output_button = tk.Button(root, text="Buscar", command=self.browse_output_folder, bg="#1E78FF", fg="white")
         self.output_button.pack(pady=5)
 
-        self.convert_button = tk.Button(root, text="Convert to Images", command=self.convert_to_images)
+        self.convert_button = tk.Button(root, text="Convertir a imágenes", command=self.convert_to_images, bg="#1E78FF", fg="white")
         self.convert_button.pack(pady=10)
 
     def browse_pdf(self):
@@ -75,7 +75,7 @@ class PDFToImageConverter:
                 cropped_image.save(image_path)
 
         pdf_document.close()
-        tk.messagebox.showinfo("Conversion Complete", "PDF converted to images successfully!")
+        messagebox.showinfo("Conversión Completa", "¡PDF convertido a imágenes con éxito!")
 
 if __name__ == "__main__":
     root = tk.Tk()

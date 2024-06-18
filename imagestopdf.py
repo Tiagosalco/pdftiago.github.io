@@ -8,27 +8,27 @@ class ImageToPDFConverter:
     def __init__(self, root):
         self.root = root
         self.root.title("Image to PDF Converter")
-        self.root.configure(bg="#f2493d")
+        self.root.configure(bg="#2C2C2C")
 
         self.image_list = []
 
-        self.frame = tk.Frame(root, padx=10, pady=10, bg="#f2493d")
+        self.frame = tk.Frame(root, padx=10, pady=10, bg="#2C2C2C")
         self.frame.pack()
 
         self.load_image()
 
-        self.add_button = tk.Button(self.frame, text="Add Images", command=self.add_images)
+        self.add_button = tk.Button(self.frame, text="Add Images", command=self.add_images, bg="#1E78FF", fg="white")
         self.add_button.pack(pady=10, padx=20)
 
-        self.convert_button = tk.Button(self.frame, text="Convert to PDF", command=self.convert_to_pdf)
+        self.convert_button = tk.Button(self.frame, text="Convert to PDF", command=self.convert_to_pdf, bg="#1E78FF", fg="white")
         self.convert_button.pack(pady=10, padx=20)
 
     def load_image(self):
-        image = Image.open("combinar.png")
+        image = Image.open("static/images_to_pdf.webp")
         image = image.resize((300, 300))
         photo = ImageTk.PhotoImage(image)
 
-        self.image_label = tk.Label(self.frame, image=photo, bg="#f2493d")
+        self.image_label = tk.Label(self.frame, image=photo, bg="#2C2C2C")
         self.image_label.image = photo
         self.image_label.pack(pady=10)
 
@@ -59,7 +59,7 @@ class ImageToPDFConverter:
             self.show_conversion_success_message(output_filename)
 
     def show_conversion_success_message(self, output_filename):
-        success_label = tk.Label(self.frame, text=f"Images converted to PDF successfully!\nSaved as {output_filename}", bg="#f2493d")
+        success_label = tk.Label(self.frame, text=f"Images converted to PDF successfully!\nSaved as {output_filename}", bg="#2C2C2C", fg="white")
         success_label.pack(pady=10)
 
 if __name__ == "__main__":

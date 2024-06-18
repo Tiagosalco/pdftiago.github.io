@@ -25,6 +25,13 @@
         <header>
             <img src="{{ url_for('static', filename='Herramientas.webp') }}" alt="Logo" class="logo">
         </header>
+        <nav class="menu">
+            <a href="/">Home</a>
+            <a href="/merge">Merge PDFs</a>
+            <a href="/crop">Crop PDF</a>
+            <a href="/convert-to-images">PDF a 3 Fotos</a>
+            <a href="/convert-to-pdf">Convert Images to PDF</a>
+        </nav>
         <section class="tools">
             <div class="tool" onclick="window.location.href='/merge'">
                 <div class="background-image" style="background-image: url('{{ url_for('static', filename='merge.webp') }}');"></div>
