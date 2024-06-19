@@ -70,9 +70,11 @@ def convert_to_images():
     if request.method == 'POST':
         try:
             file = request.files['file']
-            output_folder = request.form.get('output_folder')
             original_name = file.filename.rsplit('.', 1)[0]
-            os.makedirs(output_folder, exist_ok=True)
+            output_folder = "output_images"
+
+            if not os.path.exists(output_folder):
+                os.makedirs(output_folder)
 
             pdf_document = fitz.open(stream=file.read(), filetype="pdf")
 
@@ -97,11 +99,7 @@ def convert_to_images():
                     for file in files:
                         zipf.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), output_folder))
 
-            if os.path.exists(zip_filename):
-                return send_file(zip_filename, as_attachment=True, download_name=zip_filename)
-            else:
-                flash('Error al crear el archivo ZIP.', 'error')
-                return redirect(url_for('convert_to_images'))
+            return send_file(zip_filename, as_attachment=True, download_name=zip_filename)
         except Exception as e:
             flash(f"An error occurred: {e}", "error")
             return redirect(url_for('convert_to_images'))

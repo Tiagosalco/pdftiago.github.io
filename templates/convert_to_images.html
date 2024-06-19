@@ -35,9 +35,7 @@
         <section class="content">
             <h1>PDF a 3 Fotos</h1>
             <form action="/convert-to-images" method="post" enctype="multipart/form-data">
-                <input type="file" name="file">
-                <label for="output_folder">Seleccionar carpeta de destino:</label>
-                <input type="text" id="output_folder" name="output_folder">
+                <input type="file" name="file" required>
                 <button type="submit">Convert</button>
             </form>
         </section>
