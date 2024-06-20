@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_file, flash
+from flask import Flask, render_template, request, redirect, url_for, send_file, flash, after_this_request
 import PyPDF2
 import fitz  # PyMuPDF
 from PIL import Image
@@ -6,6 +6,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import os
 import zipfile
+import tempfile
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Necesario para usar flash
@@ -27,10 +28,19 @@ def merge():
                 original_names.append(file.filename.rsplit('.', 1)[0])
 
             output_filename = f"merge_{'_'.join(original_names)}.pdf"
-            with open(output_filename, 'wb') as f:
+            output_path = os.path.join(tempfile.gettempdir(), output_filename)
+            with open(output_path, 'wb') as f:
                 pdf_merger.write(f)
 
-            return send_file(output_filename, as_attachment=True, download_name=output_filename)
+            @after_this_request
+            def remove_file(response):
+                try:
+                    os.remove(output_path)
+                except Exception as error:
+                    app.logger.error("Error removing or closing downloaded file handle", error)
+                return response
+
+            return send_file(output_path, as_attachment=True, download_name=output_filename)
         except Exception as e:
             flash(f"An error occurred: {e}", "error")
             return redirect(url_for('merge'))
@@ -49,16 +59,25 @@ def crop():
             pdf_document = fitz.open(stream=file.read(), filetype="pdf")
             original_name = file.filename.rsplit('.', 1)[0]
             output_filename = f"crop_{original_name}.pdf"
+            output_path = os.path.join(tempfile.gettempdir(), output_filename)
 
             for page in pdf_document:
                 rect = page.rect
                 new_rect = fitz.Rect(rect.x0 + recorte_lateral, rect.y0 + recorte_superior, rect.x1 - recorte_lateral, rect.y1 - recorte_inferior)
                 page.set_cropbox(new_rect)
 
-            pdf_document.save(output_filename)
+            pdf_document.save(output_path)
             pdf_document.close()
 
-            return send_file(output_filename, as_attachment=True, download_name=output_filename)
+            @after_this_request
+            def remove_file(response):
+                try:
+                    os.remove(output_path)
+                except Exception as error:
+                    app.logger.error("Error removing or closing downloaded file handle", error)
+                return response
+
+            return send_file(output_path, as_attachment=True, download_name=output_filename)
         except Exception as e:
             flash(f"An error occurred: {e}", "error")
             return redirect(url_for('crop'))
@@ -71,10 +90,7 @@ def convert_to_images():
         try:
             file = request.files['file']
             original_name = file.filename.rsplit('.', 1)[0]
-            output_folder = "output_images"
-
-            if not os.path.exists(output_folder):
-                os.makedirs(output_folder)
+            output_folder = tempfile.mkdtemp()
 
             pdf_document = fitz.open(stream=file.read(), filetype="pdf")
 
@@ -94,12 +110,25 @@ def convert_to_images():
             pdf_document.close()
 
             zip_filename = f"images_{original_name}.zip"
-            with zipfile.ZipFile(zip_filename, 'w') as zipf:
+            zip_path = os.path.join(tempfile.gettempdir(), zip_filename)
+            with zipfile.ZipFile(zip_path, 'w') as zipf:
                 for root, dirs, files in os.walk(output_folder):
                     for file in files:
                         zipf.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), output_folder))
 
-            return send_file(zip_filename, as_attachment=True, download_name=zip_filename)
+            @after_this_request
+            def remove_files(response):
+                try:
+                    os.remove(zip_path)
+                    for root, dirs, files in os.walk(output_folder):
+                        for file in files:
+                            os.remove(os.path.join(root, file))
+                    os.rmdir(output_folder)
+                except Exception as error:
+                    app.logger.error("Error removing or closing downloaded file handle", error)
+                return response
+
+            return send_file(zip_path, as_attachment=True, download_name=zip_filename)
         except Exception as e:
             flash(f"An error occurred: {e}", "error")
             return redirect(url_for('convert_to_images'))
@@ -113,7 +142,8 @@ def convert_to_pdf():
             files = request.files.getlist('files')
             original_names = [file.filename.rsplit('.', 1)[0] for file in files]
             output_filename = f"convert_{'_'.join(original_names)}.pdf"
-            c = canvas.Canvas(output_filename, pagesize=letter)
+            output_path = os.path.join(tempfile.gettempdir(), output_filename)
+            c = canvas.Canvas(output_path, pagesize=letter)
 
             for file in files:
                 image = Image.open(file.stream)
@@ -124,7 +154,15 @@ def convert_to_pdf():
 
             c.save()
 
-            return send_file(output_filename, as_attachment=True, download_name=output_filename)
+            @after_this_request
+            def remove_file(response):
+                try:
+                    os.remove(output_path)
+                except Exception as error:
+                    app.logger.error("Error removing or closing downloaded file handle", error)
+                return response
+
+            return send_file(output_path, as_attachment=True, download_name=output_filename)
         except Exception as e:
             flash(f"An error occurred: {e}", "error")
             return redirect(url_for('convert_to_pdf'))
